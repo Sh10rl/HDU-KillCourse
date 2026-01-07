@@ -33,6 +33,7 @@ type Client struct {
 	ClientBodyConfig *ClientBodyConfig
 	NjdmIDXs         string
 	ZyhIDXs          string
+	UserAgent        string
 }
 
 // NewClient 创建一个新的客户端
@@ -43,6 +44,7 @@ func NewClient(cfg *config.Config) *Client {
 		client: &http.Client{
 			Jar: jar,
 		},
+		UserAgent: cfg.UserAgent,
 	}
 }
 
@@ -53,6 +55,7 @@ func (c *Client) Get(url string, headers map[string]string) ([]byte, int, error)
 	}
 
 	// 添加请求头
+	req.Header.Set("User-Agent", c.UserAgent)
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
@@ -88,6 +91,7 @@ func (c *Client) Post(url string, formData string, headers map[string]string) ([
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// 添加请求头
+	req.Header.Set("User-Agent", c.UserAgent)
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}

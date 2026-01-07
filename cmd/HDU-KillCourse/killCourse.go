@@ -251,6 +251,7 @@ func KillCourse(ctx context.Context, c *client.Client, cfg *config.Config, cours
 						log.Error("处理课程失败: ", err)
 						continue
 					}
+					time.Sleep(time.Duration(cfg.KillCourse.Interval) * time.Millisecond)
 				}
 				// 完成
 				channel <- "完成"

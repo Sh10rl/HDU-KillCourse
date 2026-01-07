@@ -17,8 +17,10 @@ type Config struct {
 	Time                    `json:"time"`
 	Course                  *orderedmap.OrderedMap `json:"course"`
 	WaitCourse              `json:"wait_course"`
+	KillCourse              `json:"kill_course"`
 	SmtpEmail               `json:"smtp_email"`
 	StartTime               string `json:"start_time"`
+	UserAgent               string `json:"user_agent"`
 	ClientBodyConfigEnabled string `json:"ClientBodyConfigEnabled,omitempty"`
 	CrossGradeEnabled       string `json:"CrossGradeEnabled,omitempty"`
 }
@@ -55,6 +57,11 @@ type Time struct {
 type WaitCourse struct {
 	Interval int    `json:"interval"`
 	Enabled  string `json:"enabled"`
+}
+
+// KillCourse 抢课配置
+type KillCourse struct {
+	Interval int `json:"interval"`
 }
 
 // SmtpEmail SMTP 邮件配置

@@ -27,7 +27,7 @@ func main() {
 	vars.ShowPortal()
 
 	// 检查版本更新
-	go VersionUpdate()
+	// go VersionUpdate()
 
 	// 启动web服务器编辑配置
 	go web.StartWebServer()
