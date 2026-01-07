@@ -11,7 +11,7 @@ import (
 	"github.com/cr4n5/HDU-KillCourse/log"
 	"github.com/cr4n5/HDU-KillCourse/pkg/course"
 	"github.com/cr4n5/HDU-KillCourse/pkg/login"
-	"github.com/cr4n5/HDU-KillCourse/pkg/version"
+	// "github.com/cr4n5/HDU-KillCourse/pkg/version"
 	"github.com/cr4n5/HDU-KillCourse/pkg/web"
 	"github.com/cr4n5/HDU-KillCourse/vars"
 )
