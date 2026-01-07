@@ -1,4 +1,4 @@
-package main
+package course
 
 import (
 	"context"
@@ -67,6 +67,7 @@ func SelectCourse(c *client.Client, JxbIds string, KchId string, Kklxdm string, 
 		JxbIDs: JxbIds,
 		KchID:  KchId,
 		Qz:     "0",
+		XkkzID: c.ClientBodyConfig.XkkzId[Kklxdm],
 	}
 
 	// 若为主修课程
@@ -132,6 +133,9 @@ func CancelCourse(c *client.Client, JxbIds string, KchId string, XueNian string,
 
 // HandleCourse 处理课程
 func HandleCourse(c *client.Client, cfg *config.Config, course *client.GetCourseResp, CourseName string, SelectFlag interface{}) error {
+	if course == nil || len(course.Items) == 0 {
+		return errors.New("教学班名称: " + CourseName + " 不存在")
+	}
 	for _, v := range course.Items {
 		if v.Jxbmc == CourseName {
 			// 更改Kklxdm
@@ -188,11 +192,19 @@ func HandleCourse(c *client.Client, cfg *config.Config, course *client.GetCourse
 			return nil
 		}
 	}
-	return errors.New(CourseName + "课程不存在")
+
+	log.Error("教学班名称: ", CourseName, " 于本地课程列表不存在  将在线获取课程信息...")
+	// 在线获取课程
+	onlineCourse, _, err := GetCourseOnline(c, cfg, CourseName)
+	if err != nil {
+		return err
+	}
+
+	return HandleCourse(c, cfg, onlineCourse, CourseName, SelectFlag)
 }
 
 // KillCourse 选退课
-func KillCourse(ctx context.Context, c *client.Client, cfg *config.Config, course *client.GetCourseResp) {
+func KillCourse(ctx context.Context, channel chan string, c *client.Client, cfg *config.Config, course *client.GetCourseResp) {
 	// 计算需要等待的时间
 	// 时区
 	loc, err := time.LoadLocation("Asia/Shanghai")
@@ -213,7 +225,6 @@ func KillCourse(ctx context.Context, c *client.Client, cfg *config.Config, cours
 		return
 	case <-time.After(time.Duration(waitTime) * time.Second):
 		log.Info("时间已到，开始处理课程...")
-		//go func() {
 		for {
 			select {
 			case <-ctx.Done():
@@ -258,7 +269,6 @@ func KillCourse(ctx context.Context, c *client.Client, cfg *config.Config, cours
 				return
 			}
 		}
-		//}()
 	}
 }
 
